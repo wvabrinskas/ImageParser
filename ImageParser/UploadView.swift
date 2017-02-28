@@ -60,22 +60,22 @@ class UploadView: NSView {
         guard let pasteboard = sender.draggingPasteboard().propertyList(forType: "NSFilenamesPboardType") as? NSArray
         else { return false }
         
-        for paste in pasteboard {
-            if let path = paste as? String {
-                let suffix = URL(fileURLWithPath: path).pathExtension
-                let name = URL(fileURLWithPath: path).lastPathComponent
-                if self.expectedExt.contains(suffix.lowercased()) {
-                    file = File()
-                    file!.ext = suffix
-                    file!.directory = path
-                    file!.name = name
-                    file!.realName = name.components(separatedBy: ".")[0]
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "got_file"), object: file!)
-                } else {
-                    Swift.print("file cannot be uploaded")
-                }
+        let paste = pasteboard[0]
+        if let path = paste as? String {
+            let suffix = URL(fileURLWithPath: path).pathExtension
+            let name = URL(fileURLWithPath: path).lastPathComponent
+            if self.expectedExt.contains(suffix.lowercased()) {
+                file = File()
+                file!.ext = suffix
+                file!.directory = path
+                file!.name = name
+                file!.realName = name.components(separatedBy: ".")[0]
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "got_file"), object: file!)
+            } else {
+                Swift.print("file cannot be uploaded")
             }
         }
+
         return true
     }
 

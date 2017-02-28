@@ -16,6 +16,7 @@ public struct File {
 }
 
 class ViewController: NSViewController {
+    @IBOutlet weak var elapsedLabel: NSTextField!
 
     @IBOutlet weak var colorView: NSView! {
         didSet {
@@ -37,8 +38,9 @@ class ViewController: NSViewController {
     func gotFile(notification: Notification) {
         if let file = notification.object as? File {
             let image = NSImage(contentsOfFile: file.directory)
-            Parser.parse(image: image!, complete: { (color) in
+            Parser(with: image!).parse(complete: { (color, time) in
                 self.colorView.layer!.backgroundColor = color.cgColor
+                self.elapsedLabel.stringValue = String.init(format: "Render time: %0.4fs", time)
             })
         }
     }

@@ -693,14 +693,29 @@
                                     <constraint firstAttribute="height" constant="96" id="wPV-Kz-5HP"/>
                                 </constraints>
                             </customView>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RkC-7G-8HW">
+                                <rect key="frame" x="157" y="45" width="167" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="17" id="kBv-JW-3ml"/>
+                                    <constraint firstAttribute="width" constant="163" id="nDD-gs-lCb"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="6In-TI-rM5">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="RkC-7G-8HW" firstAttribute="top" secondItem="Ux5-1N-hxK" secondAttribute="bottom" constant="25" id="3s2-Rg-Fs8"/>
+                            <constraint firstItem="RkC-7G-8HW" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="ZAB-f5-TiS"/>
                             <constraint firstItem="Ux5-1N-hxK" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="bPP-u8-kyN"/>
                             <constraint firstItem="Ux5-1N-hxK" firstAttribute="centerY" secondItem="m2S-Jp-Qdl" secondAttribute="centerY" id="k9H-3f-dQ4"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="colorView" destination="Ux5-1N-hxK" id="w2q-fF-oxv"/>
+                        <outlet property="elapsedLabel" destination="RkC-7G-8HW" id="yPm-cm-O1C"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
