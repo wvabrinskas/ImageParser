@@ -687,14 +687,20 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="Ux5-1N-hxK">
-                                <rect key="frame" x="159" y="87" width="163" height="96"/>
+                                <rect key="frame" x="159" y="62" width="163" height="96"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="163" id="ZSM-J7-dFt"/>
                                     <constraint firstAttribute="height" constant="96" id="wPV-Kz-5HP"/>
                                 </constraints>
                             </customView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="DST-wF-tM1">
+                                <rect key="frame" x="0.0" y="199" width="480" height="71"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="71" id="z3U-lQ-yUQ"/>
+                                </constraints>
+                            </customView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RkC-7G-8HW">
-                                <rect key="frame" x="157" y="45" width="167" height="17"/>
+                                <rect key="frame" x="157" y="20" width="167" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="kBv-JW-3ml"/>
                                     <constraint firstAttribute="width" constant="163" id="nDD-gs-lCb"/>
@@ -705,17 +711,63 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y3H-GJ-8W1">
+                                <rect key="frame" x="20" y="174" width="28" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="17" id="oVn-je-R6b"/>
+                                    <constraint firstAttribute="width" constant="24" id="v7o-Z7-NWT"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Red" id="KH4-XB-J3y">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9lw-Kl-0uI">
+                                <rect key="frame" x="222" y="174" width="41" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="37" id="0lb-2d-Vlx"/>
+                                    <constraint firstAttribute="height" constant="17" id="kch-ps-BUA"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Green" id="69C-Xw-FPs">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4AF-OZ-Gbl">
+                                <rect key="frame" x="434" y="174" width="31" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="27" id="JOu-7x-FAx"/>
+                                    <constraint firstAttribute="height" constant="17" id="d61-yv-3j9"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Blue" id="2IQ-0f-iLQ">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
                             <constraint firstItem="RkC-7G-8HW" firstAttribute="top" secondItem="Ux5-1N-hxK" secondAttribute="bottom" constant="25" id="3s2-Rg-Fs8"/>
+                            <constraint firstItem="DST-wF-tM1" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="64t-yE-AYa"/>
+                            <constraint firstItem="DST-wF-tM1" firstAttribute="width" secondItem="m2S-Jp-Qdl" secondAttribute="width" id="7QW-PF-sMg"/>
+                            <constraint firstItem="y3H-GJ-8W1" firstAttribute="top" secondItem="DST-wF-tM1" secondAttribute="bottom" constant="8" id="NJj-1W-sPy"/>
                             <constraint firstItem="RkC-7G-8HW" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="ZAB-f5-TiS"/>
+                            <constraint firstItem="9lw-Kl-0uI" firstAttribute="top" secondItem="DST-wF-tM1" secondAttribute="bottom" constant="8" id="aSr-hc-Vel"/>
                             <constraint firstItem="Ux5-1N-hxK" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="bPP-u8-kyN"/>
-                            <constraint firstItem="Ux5-1N-hxK" firstAttribute="centerY" secondItem="m2S-Jp-Qdl" secondAttribute="centerY" id="k9H-3f-dQ4"/>
+                            <constraint firstItem="DST-wF-tM1" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="f97-RH-DhU"/>
+                            <constraint firstAttribute="trailing" secondItem="4AF-OZ-Gbl" secondAttribute="trailing" constant="17" id="gYc-br-Bj7"/>
+                            <constraint firstItem="Ux5-1N-hxK" firstAttribute="centerY" secondItem="m2S-Jp-Qdl" secondAttribute="centerY" constant="25" id="k9H-3f-dQ4"/>
+                            <constraint firstItem="9lw-Kl-0uI" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" constant="2.5" id="lzf-rv-eNU"/>
+                            <constraint firstItem="y3H-GJ-8W1" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="22" id="mrV-2v-Uqa"/>
+                            <constraint firstItem="4AF-OZ-Gbl" firstAttribute="top" secondItem="DST-wF-tM1" secondAttribute="bottom" constant="8" id="viV-JG-GXN"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="colorView" destination="Ux5-1N-hxK" id="w2q-fF-oxv"/>
                         <outlet property="elapsedLabel" destination="RkC-7G-8HW" id="yPm-cm-O1C"/>
+                        <outlet property="gradientView" destination="DST-wF-tM1" id="3QU-Kf-y7B"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

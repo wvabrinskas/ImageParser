@@ -16,6 +16,11 @@ public struct File {
 }
 
 class ViewController: NSViewController {
+    @IBOutlet weak var gradientView: NSView! {
+        didSet {
+            gradientView.wantsLayer = true
+        }
+    }
     @IBOutlet weak var elapsedLabel: NSTextField!
 
     @IBOutlet weak var colorView: NSView! {
@@ -39,7 +44,23 @@ class ViewController: NSViewController {
         if let file = notification.object as? File {
             let image = NSImage(contentsOfFile: file.directory)
             Parser(with: image!).parse(complete: { (color, time) in
-                self.colorView.layer!.backgroundColor = color.cgColor
+                let solidColor = color["color"] as! NSColor
+                let gradientColors = color["gradient"] as! [String:CGColor]
+                
+                self.colorView.layer!.backgroundColor = solidColor.cgColor
+                
+                let gradient = CAGradientLayer()
+                gradient.colors = [gradientColors["red"]!, gradientColors["blue"]!, gradientColors["green"]!]
+                gradient.frame = self.gradientView.bounds
+                gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
+                gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
+
+                if self.gradientView.layer?.sublayers != nil{
+                    self.gradientView.layer!.replaceSublayer(self.gradientView.layer!.sublayers![0], with: gradient)
+                } else {
+                    self.gradientView.layer!.insertSublayer(gradient, at: 0)
+                }
+                
                 self.elapsedLabel.stringValue = String.init(format: "Render time: %0.4fs", time)
             })
         }
