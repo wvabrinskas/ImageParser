@@ -50,7 +50,7 @@ class ViewController: NSViewController {
                 self.colorView.layer!.backgroundColor = solidColor.cgColor
                 
                 let gradient = CAGradientLayer()
-                gradient.colors = [gradientColors["red"]!, gradientColors["blue"]!, gradientColors["green"]!]
+                gradient.colors = [gradientColors["red"]!, gradientColors["green"]!, gradientColors["blue"]!]
                 gradient.frame = self.gradientView.bounds
                 gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
                 gradient.endPoint = CGPoint(x: 1.0, y: 0.5)

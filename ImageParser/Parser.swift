@@ -20,12 +20,21 @@ class Parser: NSObject {
     var results: [Color] = [Color]()
     var gradient: [[String:Color]] = [[String:Color]]()
     
+    var highestGreen:CGFloat = 0.0
+    var highestBlue:CGFloat = 0.0
+    var highestRed:CGFloat = 0.0
+    
+    
+    var greenColor: Color = (r: 0, g: 0, b: 0)
+    var redColor: Color = (r: 0, g: 0, b: 0)
+    var blueColor: Color = (r: 0, g: 0, b: 0)
+    
     init(with testImage:NSImage) {
         super.init()
         image = testImage
     }
     
-    private func analyze(imageRect: NSRect, complete:@escaping(_ result: Color, _ gradients: [String:Color]) -> ())  {
+    private func analyze(imageRect: NSRect, complete:@escaping(_ result: Color) -> ())  {
         var imageRect = imageRect
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             if let coreImage = self.image.cgImage(forProposedRect: &imageRect, context: NSGraphicsContext.current(), hints: nil) {
@@ -42,20 +51,12 @@ class Parser: NSObject {
                         var totalB:CGFloat = 0
                         
                         var totalCount = 0
-                    
-                        
-                        var highestGreen:CGFloat = 0.0
-                        var highestBlue:CGFloat = 0.0
-                        var highestRed:CGFloat = 0.0
-                        
-                        var greenColor: Color = (r: 0, g: 0, b: 0)
-                        var redColor: Color = (r: 0, g: 0, b: 0)
-                        var blueColor: Color = (r: 0, g: 0, b: 0)
+
                         //green if g is greater than r and b 
                         //red if r is greater than g and b 
                         //blue if b is greater than r and g
                         
-                        let adjustment:CGFloat = 10.0
+                        let adjustment:CGFloat = 30.0
                         
                         for x in imgX..<width {
                             for y in imgY..<height {
@@ -66,26 +67,25 @@ class Parser: NSObject {
                                 let g = CGFloat(data[pixelInfo + 1])
                                 let b = CGFloat(data[pixelInfo + 2])
                                 
-                                if g > b + adjustment && g > r + adjustment {
-                                    if g > highestGreen {
-                                        highestGreen = g
-                                        greenColor = (r: r, g:highestGreen, b: b)
+                                if g - b > adjustment && g - r > adjustment {
+                                    if g > self.highestGreen {
+                                        self.highestGreen = g
+                                        self.greenColor = (r: r, g:self.highestGreen, b: b)
                                     }
                                 }
                                 
-                                if r > b + adjustment && r > g + adjustment {
-                                    if r > highestRed {
-                                        highestRed = r
-                                        redColor = (r: highestRed, g:g, b: b)
+                                if r - b > adjustment && r - g > adjustment {
+                                    if r > self.highestRed {
+                                        self.highestRed = r
+                                        self.redColor = (r: self.highestRed, g:g, b: b)
 
                                     }
                                 }
                                 
-                                if b > r + adjustment && b > g + adjustment {
-                                    if b > highestBlue {
-                                        highestBlue = b
-                                        blueColor = (r: r, g:g, b: highestBlue)
-
+                                if b - r > adjustment && b - g > adjustment {
+                                    if b > self.highestBlue {
+                                        self.highestBlue = b
+                                        self.blueColor = (r: r, g:g, b: self.highestBlue)
                                     }
                                 }
 
@@ -104,7 +104,7 @@ class Parser: NSObject {
                         let finalG = totalG / CGFloat(totalCount)
                         let finalB = totalB / CGFloat(totalCount)
                         
-                        complete((finalR,finalG,finalB), ["red" : redColor, "green" : greenColor, "blue" : blueColor])
+                        complete((finalR,finalG,finalB))
                         
                     }
                 }
@@ -115,65 +115,15 @@ class Parser: NSObject {
     private func createColorResult() -> ColorResult {
         let solidColor = color()
         
-        var redColor: NSColor = .white
-        var greenColor: NSColor = .green
-        var blueColor: NSColor = .white
-        
-        var redR: CGFloat = 0
-        var greenR: CGFloat = 0
-        var blueR: CGFloat = 0
-        
-        var redG: CGFloat = 0
-        var greenG: CGFloat = 0
-        var blueG: CGFloat = 0
-        
-        var redB: CGFloat = 0
-        var greenB: CGFloat = 0
-        var blueB: CGFloat = 0
-        
-        var tempColors = [UnsafeMutablePointer<CGFloat>]()
-        
-        for gradientColor in gradient {
-            
-            tempColors.removeAll()
-            
-            redR = redR + gradientColor["red"]!.r
-            blueR = blueR + gradientColor["red"]!.g
-            greenR = greenR + gradientColor["red"]!.b
-
-            redG = redG + gradientColor["green"]!.r
-            blueG = blueG + gradientColor["green"]!.g
-            greenG = greenG + gradientColor["green"]!.b
-            
-            redB = redB + gradientColor["blue"]!.r
-            blueB = blueB + gradientColor["blue"]!.g
-            greenB = greenB + gradientColor["blue"]!.b
-            
-            tempColors.append(&redR)
-            tempColors.append(&blueR)
-            tempColors.append(&greenR)
-            tempColors.append(&redG)
-            tempColors.append(&blueG)
-            tempColors.append(&greenG)
-            tempColors.append(&redB)
-            tempColors.append(&blueB)
-            tempColors.append(&greenB)
-        }
-        
-        
-        tempColors.forEach { (colorPointer) in
-            colorPointer.pointee = colorPointer.pointee / CGFloat(gradient.count)
-        }
-        
-        redColor = NSColor(deviceRed: redR / 255.0, green: greenR / 255.0, blue: blueR / 255.0, alpha: 1.0)
-        greenColor = NSColor(deviceRed: redG / 255.0, green: greenG / 255.0, blue: blueG / 255.0, alpha: 1.0)
-        blueColor = NSColor(deviceRed: redB / 255.0, green: greenB / 255.0, blue: blueB / 255.0, alpha: 1.0)
+        let red = NSColor(deviceRed: redColor.r / 255.0, green: redColor.g / 255.0, blue: redColor.b / 255.0, alpha: 1.0)
+        let green = NSColor(deviceRed: greenColor.r / 255.0, green: greenColor.g / 255.0, blue: greenColor.b / 255.0, alpha: 1.0)
+        let blue = NSColor(deviceRed: blueColor.r / 255.0, green: blueColor.g / 255.0, blue: blueColor.b / 255.0, alpha: 1.0)
         
         print(redColor)
         print(greenColor)
         print(blueColor)
 
-        let colorResult:ColorResult = ["color" : solidColor, "gradient" : ["red": redColor.cgColor, "green" : greenColor.cgColor, "blue" : blueColor.cgColor]]
+        let colorResult:ColorResult = ["color" : solidColor, "gradient" : ["red": red.cgColor, "green" : green.cgColor, "blue" : blue.cgColor]]
         
         return colorResult
 
@@ -218,9 +168,8 @@ class Parser: NSObject {
         }
         
         for imageRect in frames {
-            self.analyze(imageRect: imageRect, complete: { (result, gradient) in
+            self.analyze(imageRect: imageRect, complete: { (result) in
                 self.results.append(result)
-                self.gradient.append(gradient)
                 
                 if self.results.count == frames.count {
                     
