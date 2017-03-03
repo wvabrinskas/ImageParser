@@ -56,7 +56,10 @@ class Parser: NSObject {
                         //red if r is greater than g and b 
                         //blue if b is greater than r and g
                         
-                        let adjustment:CGFloat = 30.0
+                        //how drastic do you want the difference in colors to be.
+                        //30 seems to be a good value
+                        //this could be automatically figured out by iterating through all the pixels and getting the greatest difference
+                        let adjustment:CGFloat = 45.0
                         
                         for x in imgX..<width {
                             for y in imgY..<height {
@@ -113,24 +116,20 @@ class Parser: NSObject {
     }
     
     private func createColorResult() -> ColorResult {
-        let solidColor = color()
+        let singleColor = solidColor()
         
         let red = NSColor(deviceRed: redColor.r / 255.0, green: redColor.g / 255.0, blue: redColor.b / 255.0, alpha: 1.0)
         let green = NSColor(deviceRed: greenColor.r / 255.0, green: greenColor.g / 255.0, blue: greenColor.b / 255.0, alpha: 1.0)
         let blue = NSColor(deviceRed: blueColor.r / 255.0, green: blueColor.g / 255.0, blue: blueColor.b / 255.0, alpha: 1.0)
         
-        print(redColor)
-        print(greenColor)
-        print(blueColor)
-
-        let colorResult:ColorResult = ["color" : solidColor, "gradient" : ["red": red.cgColor, "green" : green.cgColor, "blue" : blue.cgColor]]
+        let colorResult:ColorResult = ["color" : singleColor, "gradient" : ["red": red.cgColor, "green" : green.cgColor, "blue" : blue.cgColor]]
         
         return colorResult
 
     }
 
     
-    private func color() -> NSColor {
+    private func solidColor() -> NSColor {
         var totalR:CGFloat = 0
         var totalG:CGFloat = 0
         var totalB:CGFloat = 0
