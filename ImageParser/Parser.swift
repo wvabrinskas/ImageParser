@@ -56,6 +56,7 @@ class Parser: NSObject {
                         var totalB:CGFloat = 0
                         
                         var totalCount = 0
+                        
 
                         //green if g is greater than r and b 
                         //red if r is greater than g and b 
@@ -72,6 +73,10 @@ class Parser: NSObject {
                                 
                                 //only set the highest red value if its distance from the other two values is greater than previous
                                 if r - b > self.greatestDifRed.b && r - g > self.greatestDifRed.g {
+                                    objc_sync_enter(self.greatestDifRed)
+                                    objc_sync_enter(self.redColor)
+                                    objc_sync_enter(self.highestRed)
+
                                     self.greatestDifRed.b = r - b
                                     self.greatestDifRed.g = r - g
                                     
@@ -81,6 +86,11 @@ class Parser: NSObject {
                                 
                                 //only set the highest green value if its distance from the other two values is greater than previous
                                 if g - r > self.greatestDifGreen.r && g - b > self.greatestDifGreen.b {
+                                    
+                                    objc_sync_enter(self.greatestDifGreen)
+                                    objc_sync_enter(self.greenColor)
+                                    objc_sync_enter(self.highestGreen)
+
                                     self.greatestDifGreen.r = g - r
                                     self.greatestDifGreen.b = g - b
                                     
@@ -90,6 +100,11 @@ class Parser: NSObject {
 
                                 //only set the highest blue value if its distance from the other two values is greater than previous
                                 if b - r > self.greatestDifBlue.r &&  b - g > self.greatestDifBlue.g {
+                                    
+                                    objc_sync_enter(self.greatestDifBlue)
+                                    objc_sync_enter(self.blueColor)
+                                    objc_sync_enter(self.highestBlue)
+                                    
                                     self.greatestDifBlue.r = b - r
                                     self.greatestDifBlue.g = b - g
                                     
@@ -103,6 +118,17 @@ class Parser: NSObject {
                                 
                                 totalCount = totalCount + 1
                                 
+                                defer {
+                                    objc_sync_exit(self.greatestDifRed)
+                                    objc_sync_exit(self.greatestDifBlue)
+                                    objc_sync_exit(self.greatestDifGreen)
+                                    objc_sync_exit(self.redColor)
+                                    objc_sync_exit(self.greenColor)
+                                    objc_sync_exit(self.blueColor)
+                                    objc_sync_exit(self.highestRed)
+                                    objc_sync_exit(self.highestGreen)
+                                    objc_sync_exit(self.highestBlue)
+                                }
                             }
                             
                         }
