@@ -29,6 +29,8 @@ class Parser: NSObject {
     var redColor: Color = (r: 0, g: 0, b: 0)
     var blueColor: Color = (r: 0, g: 0, b: 0)
     
+    var sensitivity: CGFloat = 45.0
+    
     init(with testImage:NSImage) {
         super.init()
         image = testImage
@@ -59,7 +61,7 @@ class Parser: NSObject {
                         //how drastic do you want the difference in colors to be.
                         //30 seems to be a good value
                         //this could be automatically figured out by iterating through all the pixels and getting the greatest difference
-                        let adjustment:CGFloat = 45.0
+                        let adjustment:CGFloat = self.sensitivity
                         
                         for x in imgX..<width {
                             for y in imgY..<height {
@@ -153,7 +155,8 @@ class Parser: NSObject {
         return analyzedColor
     }
     
-    public func parse(complete:@escaping(_ color: ColorResult, _ time: Double) -> ()) {
+    public func parse(with sensitivity:CGFloat, complete:@escaping(_ color: ColorResult, _ time: Double) -> ()) {
+        self.sensitivity = sensitivity
         var elapsed = Date().timeIntervalSince1970
         
         var frames:[CGRect] = [CGRect]()

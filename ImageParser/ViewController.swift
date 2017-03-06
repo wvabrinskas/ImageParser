@@ -16,13 +16,18 @@ public struct File {
 }
 
 class ViewController: NSViewController {
+    @IBOutlet weak var testImageView: NSImageView!
+    
+    @IBOutlet weak var sensitivityScale: NSTextField!
+    @IBOutlet weak var runAgainButton: NSButton!
     @IBOutlet weak var gradientView: NSView! {
         didSet {
             gradientView.wantsLayer = true
         }
     }
     @IBOutlet weak var elapsedLabel: NSTextField!
-
+    @IBOutlet weak var sensitivitySlider: NSSlider!
+    @IBOutlet weak var averageColorLabel: NSTextField!
     @IBOutlet weak var colorView: NSView! {
         didSet {
             colorView.wantsLayer = true
@@ -31,41 +36,76 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(gotFile(notification:)), name: NSNotification.Name.init(rawValue: "got_file"), object: nil)
+        
+        
         // Do any additional setup after loading the view.
     }
-
+    
+    override func viewWillAppear() {
+        super.viewWillAppear()
+        colorView.layer!.borderWidth = 2.0
+        colorView.layer!.borderColor = NSColor(deviceWhite: 0.6, alpha: 1.0).cgColor
+        colorView.layer!.cornerRadius = 5.0
+        runAgainButton.isEnabled = false
+    }
+    
     override var representedObject: Any? {
         didSet {
-        // Update the view, if already loaded.
+            // Update the view, if already loaded.
         }
+    }
+    
+    @IBAction func scale(_ sender: NSSlider) {
+        sensitivityScale.stringValue = "Sensitivity scale: \(round(sender.floatValue * 10.0) / 10.0)"
+    }
+    
+    private func parse(with image:NSImage) {
+        runAgainButton.isEnabled = false
+
+        Parser(with: image).parse(with:CGFloat(sensitivitySlider.floatValue), complete: { (color, time) in
+            
+            self.runAgainButton.isEnabled = true
+
+            let solidColor = color["color"] as! NSColor
+            let gradientColors = color["gradient"] as! [String:CGColor]
+            
+            self.colorView.layer!.backgroundColor = solidColor.cgColor
+            
+            let red = round(solidColor.redComponent * 100.0) / 100.0
+            let green = round(solidColor.greenComponent * 100.0) / 100.0
+            let blue = round(solidColor.blueComponent * 100.0) / 100.0
+            
+            self.averageColorLabel.stringValue = "Average color: rgb(\(red), \(green), \(blue))"
+            
+            let gradient = CAGradientLayer()
+            gradient.colors = [gradientColors["red"]!, gradientColors["green"]!, gradientColors["blue"]!]
+            gradient.frame = self.gradientView.bounds
+            gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
+            gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
+            
+            if self.gradientView.layer?.sublayers != nil{
+                self.gradientView.layer!.replaceSublayer(self.gradientView.layer!.sublayers![0], with: gradient)
+            } else {
+                self.gradientView.layer!.insertSublayer(gradient, at: 0)
+            }
+            
+            self.elapsedLabel.stringValue = String.init(format: "Render time: %0.4fs", time)
+        })
+    }
+    
+    @IBAction func runAgain(_ sender: Any) {
+        parse(with: testImageView.image!)
     }
     
     func gotFile(notification: Notification) {
         if let file = notification.object as? File {
-            let image = NSImage(contentsOfFile: file.directory)
-            Parser(with: image!).parse(complete: { (color, time) in
-                let solidColor = color["color"] as! NSColor
-                let gradientColors = color["gradient"] as! [String:CGColor]
-                
-                self.colorView.layer!.backgroundColor = solidColor.cgColor
-                
-                let gradient = CAGradientLayer()
-                gradient.colors = [gradientColors["red"]!, gradientColors["green"]!, gradientColors["blue"]!]
-                gradient.frame = self.gradientView.bounds
-                gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
-                gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
-
-                if self.gradientView.layer?.sublayers != nil{
-                    self.gradientView.layer!.replaceSublayer(self.gradientView.layer!.sublayers![0], with: gradient)
-                } else {
-                    self.gradientView.layer!.insertSublayer(gradient, at: 0)
-                }
-                
-                self.elapsedLabel.stringValue = String.init(format: "Render time: %0.4fs", time)
-            })
+            if let image = NSImage(contentsOfFile: file.directory) {
+                testImageView.image = image
+                self.parse(with: image)
+            }
         }
     }
-
-
+    
+    
 }
 
