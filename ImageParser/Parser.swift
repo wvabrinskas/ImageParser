@@ -41,7 +41,7 @@ class Parser: NSObject {
     private func analyze(imageRect: NSRect, complete:@escaping(_ result: Color) -> ())  {
         var imageRect = imageRect
         
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async {
             if let coreImage = self.image.cgImage(forProposedRect: &imageRect, context: NSGraphicsContext.current(), hints: nil) {
                 if let pixelData = coreImage.dataProvider?.data {
                     if let data:UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData) {
