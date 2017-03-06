@@ -779,52 +779,25 @@
                                 </constraints>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="sJL-jq-vuI"/>
                             </imageView>
-                            <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4QS-O5-CbO">
-                                <rect key="frame" x="456" y="169" width="96" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="7zq-HO-BBo"/>
-                                    <constraint firstAttribute="width" constant="92" id="aXi-y3-DWn"/>
-                                </constraints>
-                                <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" doubleValue="45" tickMarkPosition="above" sliderType="linear" id="0Fb-LS-zog"/>
-                                <connections>
-                                    <action selector="scale:" target="XfG-lQ-9wD" id="61c-z9-9yf"/>
-                                </connections>
-                            </slider>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FqJ-Ku-nTc">
-                                <rect key="frame" x="248" y="171" width="167" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="1X5-Xx-nVw"/>
-                                    <constraint firstAttribute="width" constant="163" id="95l-Xm-WkJ"/>
-                                </constraints>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Sensitivity scale: 45" id="vmN-Xn-taV">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                         </subviews>
                         <constraints>
                             <constraint firstItem="o4J-2z-ayQ" firstAttribute="leading" secondItem="Ux5-1N-hxK" secondAttribute="leading" id="27D-BY-ux6"/>
                             <constraint firstItem="RkC-7G-8HW" firstAttribute="top" secondItem="Ux5-1N-hxK" secondAttribute="bottom" constant="8" id="3s2-Rg-Fs8"/>
-                            <constraint firstItem="FqJ-Ku-nTc" firstAttribute="leading" secondItem="RkC-7G-8HW" secondAttribute="leading" id="4ty-pg-YBC"/>
                             <constraint firstItem="DST-wF-tM1" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="64t-yE-AYa"/>
                             <constraint firstItem="DST-wF-tM1" firstAttribute="width" secondItem="m2S-Jp-Qdl" secondAttribute="width" id="7QW-PF-sMg"/>
                             <constraint firstItem="aHU-Xq-gIM" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" constant="2" id="MLR-Vs-ul9"/>
                             <constraint firstItem="QR1-xH-Vhp" firstAttribute="trailing" secondItem="Ux5-1N-hxK" secondAttribute="trailing" id="MwD-aU-aTI"/>
                             <constraint firstItem="y3H-GJ-8W1" firstAttribute="top" secondItem="DST-wF-tM1" secondAttribute="bottom" constant="8" id="NJj-1W-sPy"/>
-                            <constraint firstItem="4QS-O5-CbO" firstAttribute="trailing" secondItem="QR1-xH-Vhp" secondAttribute="trailing" id="WfC-gC-48u"/>
                             <constraint firstItem="RkC-7G-8HW" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" constant="-68.5" id="ZAB-f5-TiS"/>
                             <constraint firstItem="9lw-Kl-0uI" firstAttribute="top" secondItem="DST-wF-tM1" secondAttribute="bottom" constant="8" id="aSr-hc-Vel"/>
                             <constraint firstItem="Ux5-1N-hxK" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" id="bPP-u8-kyN"/>
                             <constraint firstItem="QR1-xH-Vhp" firstAttribute="top" secondItem="Ux5-1N-hxK" secondAttribute="bottom" constant="4" id="cBx-JX-DTM"/>
                             <constraint firstItem="DST-wF-tM1" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="f97-RH-DhU"/>
                             <constraint firstAttribute="trailing" secondItem="4AF-OZ-Gbl" secondAttribute="trailing" constant="17" id="gYc-br-Bj7"/>
-                            <constraint firstItem="4QS-O5-CbO" firstAttribute="top" secondItem="QR1-xH-Vhp" secondAttribute="bottom" constant="14" id="jOY-kX-cHn"/>
                             <constraint firstItem="Ux5-1N-hxK" firstAttribute="centerY" secondItem="m2S-Jp-Qdl" secondAttribute="centerY" constant="25" id="k9H-3f-dQ4"/>
                             <constraint firstItem="9lw-Kl-0uI" firstAttribute="centerX" secondItem="m2S-Jp-Qdl" secondAttribute="centerX" constant="2.5" id="lzf-rv-eNU"/>
                             <constraint firstItem="y3H-GJ-8W1" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="22" id="mrV-2v-Uqa"/>
                             <constraint firstItem="o4J-2z-ayQ" firstAttribute="top" secondItem="aHU-Xq-gIM" secondAttribute="bottom" constant="8" id="uKS-fQ-AsP"/>
-                            <constraint firstItem="FqJ-Ku-nTc" firstAttribute="top" secondItem="RkC-7G-8HW" secondAttribute="bottom" constant="14" id="uL4-ay-7ZN"/>
                             <constraint firstItem="Ux5-1N-hxK" firstAttribute="top" secondItem="o4J-2z-ayQ" secondAttribute="bottom" constant="8" id="ukv-xq-jP5"/>
                             <constraint firstItem="4AF-OZ-Gbl" firstAttribute="top" secondItem="DST-wF-tM1" secondAttribute="bottom" constant="8" id="viV-JG-GXN"/>
                         </constraints>
@@ -835,8 +808,6 @@
                         <outlet property="elapsedLabel" destination="RkC-7G-8HW" id="yPm-cm-O1C"/>
                         <outlet property="gradientView" destination="DST-wF-tM1" id="3QU-Kf-y7B"/>
                         <outlet property="runAgainButton" destination="QR1-xH-Vhp" id="wmE-7K-0sf"/>
-                        <outlet property="sensitivityScale" destination="FqJ-Ku-nTc" id="HmK-ix-M6z"/>
-                        <outlet property="sensitivitySlider" destination="4QS-O5-CbO" id="7gn-Aq-nwO"/>
                         <outlet property="testImageView" destination="aHU-Xq-gIM" id="PmP-WB-jj9"/>
                     </connections>
                 </viewController>

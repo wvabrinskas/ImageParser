@@ -18,7 +18,6 @@ public struct File {
 class ViewController: NSViewController {
     @IBOutlet weak var testImageView: NSImageView!
     
-    @IBOutlet weak var sensitivityScale: NSTextField!
     @IBOutlet weak var runAgainButton: NSButton!
     @IBOutlet weak var gradientView: NSView! {
         didSet {
@@ -26,7 +25,6 @@ class ViewController: NSViewController {
         }
     }
     @IBOutlet weak var elapsedLabel: NSTextField!
-    @IBOutlet weak var sensitivitySlider: NSSlider!
     @IBOutlet weak var averageColorLabel: NSTextField!
     @IBOutlet weak var colorView: NSView! {
         didSet {
@@ -54,15 +52,14 @@ class ViewController: NSViewController {
             // Update the view, if already loaded.
         }
     }
-    
-    @IBAction func scale(_ sender: NSSlider) {
-        sensitivityScale.stringValue = "Sensitivity scale: \(round(sender.floatValue * 10.0) / 10.0)"
+    private func roundFloat(value: CGFloat,to place:CGFloat) -> CGFloat {
+        return round(value * place) / place
     }
     
     private func parse(with image:NSImage) {
         runAgainButton.isEnabled = false
 
-        Parser(with: image).parse(with:CGFloat(sensitivitySlider.floatValue), complete: { (color, time) in
+        Parser(with: image).parse(complete: { (color, time) in
             
             self.runAgainButton.isEnabled = true
 
@@ -71,10 +68,10 @@ class ViewController: NSViewController {
             
             self.colorView.layer!.backgroundColor = solidColor.cgColor
             
-            let red = round(solidColor.redComponent * 100.0) / 100.0
-            let green = round(solidColor.greenComponent * 100.0) / 100.0
-            let blue = round(solidColor.blueComponent * 100.0) / 100.0
-            
+            let red = self.roundFloat(value: solidColor.redComponent, to: 100.0)
+            let green = self.roundFloat(value: solidColor.greenComponent, to: 100.0)
+            let blue = self.roundFloat(value: solidColor.blueComponent, to: 100.0)
+
             self.averageColorLabel.stringValue = "Average color: rgb(\(red), \(green), \(blue))"
             
             let gradient = CAGradientLayer()

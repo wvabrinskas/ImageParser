@@ -16,20 +16,22 @@ typealias GradientColors = [NSColor]
 
 class Parser: NSObject {
     
-    var image:NSImage!
-    var results: [Color] = [Color]()
-    var gradient: [[String:Color]] = [[String:Color]]()
+    private var image:NSImage!
+    private var results: [Color] = [Color]()
+    private var gradient: [[String:Color]] = [[String:Color]]()
     
-    var highestGreen:CGFloat = 0.0
-    var highestBlue:CGFloat = 0.0
-    var highestRed:CGFloat = 0.0
+    private var highestGreen:CGFloat = 0.0
+    private var highestBlue:CGFloat = 0.0
+    private var highestRed:CGFloat = 0.0
     
+    //tuples to hold the differences in each RGB values as compared to one another
+    private var greatestDifRed:(g:CGFloat,b:CGFloat) = (g:0.0 , b:0.0)
+    private var greatestDifGreen:(r:CGFloat,b:CGFloat) = (r:0.0, b:0.0)
+    private var greatestDifBlue:(r:CGFloat,g:CGFloat) = (r:0.0, g:0.0)
     
-    var greenColor: Color = (r: 0, g: 0, b: 0)
-    var redColor: Color = (r: 0, g: 0, b: 0)
-    var blueColor: Color = (r: 0, g: 0, b: 0)
-    
-    var sensitivity: CGFloat = 45.0
+    private var greenColor: Color = (r: 0, g: 0, b: 0)
+    private var redColor: Color = (r: 0, g: 0, b: 0)
+    private var blueColor: Color = (r: 0, g: 0, b: 0)
     
     init(with testImage:NSImage) {
         super.init()
@@ -38,6 +40,7 @@ class Parser: NSObject {
     
     private func analyze(imageRect: NSRect, complete:@escaping(_ result: Color) -> ())  {
         var imageRect = imageRect
+        
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             if let coreImage = self.image.cgImage(forProposedRect: &imageRect, context: NSGraphicsContext.current(), hints: nil) {
                 if let pixelData = coreImage.dataProvider?.data {
@@ -58,11 +61,6 @@ class Parser: NSObject {
                         //red if r is greater than g and b 
                         //blue if b is greater than r and g
                         
-                        //how drastic do you want the difference in colors to be.
-                        //30 seems to be a good value
-                        //this could be automatically figured out by iterating through all the pixels and getting the greatest difference
-                        let adjustment:CGFloat = self.sensitivity
-                        
                         for x in imgX..<width {
                             for y in imgY..<height {
                                 
@@ -72,28 +70,33 @@ class Parser: NSObject {
                                 let g = CGFloat(data[pixelInfo + 1])
                                 let b = CGFloat(data[pixelInfo + 2])
                                 
-                                if g - b > adjustment && g - r > adjustment {
-                                    if g > self.highestGreen {
-                                        self.highestGreen = g
-                                        self.greenColor = (r: r, g:self.highestGreen, b: b)
-                                    }
+                                //only set the highest red value if its distance from the other two values is greater than previous
+                                if r - b > self.greatestDifRed.b && r - g > self.greatestDifRed.g {
+                                    self.greatestDifRed.b = r - b
+                                    self.greatestDifRed.g = r - g
+                                    
+                                    self.highestRed = r
+                                    self.redColor = (r: self.highestRed, g:g, b: b)
                                 }
                                 
-                                if r - b > adjustment && r - g > adjustment {
-                                    if r > self.highestRed {
-                                        self.highestRed = r
-                                        self.redColor = (r: self.highestRed, g:g, b: b)
+                                //only set the highest green value if its distance from the other two values is greater than previous
+                                if g - r > self.greatestDifGreen.r && g - b > self.greatestDifGreen.b {
+                                    self.greatestDifGreen.r = g - r
+                                    self.greatestDifGreen.b = g - b
+                                    
+                                    self.highestGreen = g
+                                    self.greenColor = (r: r, g:self.highestGreen, b: b)
+                                }
 
-                                    }
+                                //only set the highest blue value if its distance from the other two values is greater than previous
+                                if b - r > self.greatestDifBlue.r &&  b - g > self.greatestDifBlue.g {
+                                    self.greatestDifBlue.r = b - r
+                                    self.greatestDifBlue.g = b - g
+                                    
+                                    self.highestBlue = b
+                                    self.blueColor = (r: r, g:g, b: self.highestBlue)
                                 }
                                 
-                                if b - r > adjustment && b - g > adjustment {
-                                    if b > self.highestBlue {
-                                        self.highestBlue = b
-                                        self.blueColor = (r: r, g:g, b: self.highestBlue)
-                                    }
-                                }
-
                                 totalR = totalR + r
                                 totalG = totalG + g
                                 totalB = totalB + b
@@ -104,7 +107,7 @@ class Parser: NSObject {
                             
                         }
                         
-                        //get averages of colors
+                        //get averages of colors for quadrant
                         let finalR = totalR / CGFloat(totalCount)
                         let finalG = totalG / CGFloat(totalCount)
                         let finalB = totalB / CGFloat(totalCount)
@@ -155,8 +158,7 @@ class Parser: NSObject {
         return analyzedColor
     }
     
-    public func parse(with sensitivity:CGFloat, complete:@escaping(_ color: ColorResult, _ time: Double) -> ()) {
-        self.sensitivity = sensitivity
+    public func parse(complete:@escaping(_ color: ColorResult, _ time: Double) -> ()) {
         var elapsed = Date().timeIntervalSince1970
         
         var frames:[CGRect] = [CGRect]()
