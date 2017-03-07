@@ -18,30 +18,27 @@ class Parser: NSObject {
     
     private var image:NSImage!
     private var results: [Color] = [Color]()
-    private var gradient: [[String:Color]] = [[String:Color]]()
-    
-    private var highestGreen:CGFloat = 0.0
-    private var highestBlue:CGFloat = 0.0
-    private var highestRed:CGFloat = 0.0
-    
-    //tuples to hold the differences in each RGB values as compared to one another
-    private var greatestDifRed:(g:CGFloat,b:CGFloat) = (g:0.0 , b:0.0)
-    private var greatestDifGreen:(r:CGFloat,b:CGFloat) = (r:0.0, b:0.0)
-    private var greatestDifBlue:(r:CGFloat,g:CGFloat) = (r:0.0, g:0.0)
-    
-    private var greenColor: Color = (r: 0, g: 0, b: 0)
-    private var redColor: Color = (r: 0, g: 0, b: 0)
-    private var blueColor: Color = (r: 0, g: 0, b: 0)
-    
+    private var gradients: [[String:Color]] = [[String:Color]]()
+
     init(with testImage:NSImage) {
         super.init()
         image = testImage
     }
     
-    private func analyze(imageRect: NSRect, complete:@escaping(_ result: Color) -> ())  {
-        var imageRect = imageRect
+    private func analyze(imageRect: NSRect, complete:@escaping(_ color: Color, _ gradient: [String: Color]) -> ())  {
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async {
+            
+            var imageRect = imageRect
+            
+            var greatestDifRed:(g: CGFloat, b: CGFloat) = (g:0.0 , b:0.0)
+            var greatestDifGreen:(r: CGFloat, b: CGFloat)  = (r:0.0, b:0.0)
+            var greatestDifBlue:(r: CGFloat, g: CGFloat)  = (r:0.0, g:0.0)
+            
+            var greenColor: Color = (r: 0, g: 0, b: 0)
+            var redColor: Color = (r: 0, g: 0, b: 0)
+            var blueColor: Color = (r: 0, g: 0, b: 0)
+            
             if let coreImage = self.image.cgImage(forProposedRect: &imageRect, context: NSGraphicsContext.current(), hints: nil) {
                 if let pixelData = coreImage.dataProvider?.data {
                     if let data:UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData) {
@@ -72,44 +69,30 @@ class Parser: NSObject {
                                 let b = CGFloat(data[pixelInfo + 2])
                                 
                                 //only set the highest red value if its distance from the other two values is greater than previous
-                                if r - b > self.greatestDifRed.b && r - g > self.greatestDifRed.g {
-                                    objc_sync_enter(self.greatestDifRed)
-                                    objc_sync_enter(self.redColor)
-                                    objc_sync_enter(self.highestRed)
+                                if r - b > greatestDifRed.b && r - g > greatestDifRed.g {
 
-                                    self.greatestDifRed.b = r - b
-                                    self.greatestDifRed.g = r - g
+                                    greatestDifRed.b = r - b
+                                    greatestDifRed.g = r - g
                                     
-                                    self.highestRed = r
-                                    self.redColor = (r: self.highestRed, g:g, b: b)
+                                    redColor = (r: r, g:g, b: b)
                                 }
                                 
                                 //only set the highest green value if its distance from the other two values is greater than previous
-                                if g - r > self.greatestDifGreen.r && g - b > self.greatestDifGreen.b {
+                                if g - r > greatestDifGreen.r && g - b > greatestDifGreen.b {
                                     
-                                    objc_sync_enter(self.greatestDifGreen)
-                                    objc_sync_enter(self.greenColor)
-                                    objc_sync_enter(self.highestGreen)
-
-                                    self.greatestDifGreen.r = g - r
-                                    self.greatestDifGreen.b = g - b
+                                    greatestDifGreen.r = g - r
+                                    greatestDifGreen.b = g - b
                                     
-                                    self.highestGreen = g
-                                    self.greenColor = (r: r, g:self.highestGreen, b: b)
+                                    greenColor = (r: r, g, b: b)
                                 }
 
                                 //only set the highest blue value if its distance from the other two values is greater than previous
-                                if b - r > self.greatestDifBlue.r &&  b - g > self.greatestDifBlue.g {
+                                if b - r > greatestDifBlue.r &&  b - g > greatestDifBlue.g {
                                     
-                                    objc_sync_enter(self.greatestDifBlue)
-                                    objc_sync_enter(self.blueColor)
-                                    objc_sync_enter(self.highestBlue)
+                                    greatestDifBlue.r = b - r
+                                    greatestDifBlue.g = b - g
                                     
-                                    self.greatestDifBlue.r = b - r
-                                    self.greatestDifBlue.g = b - g
-                                    
-                                    self.highestBlue = b
-                                    self.blueColor = (r: r, g:g, b: self.highestBlue)
+                                    blueColor = (r: r, g:g, b: b)
                                 }
                                 
                                 totalR = totalR + r
@@ -118,27 +101,19 @@ class Parser: NSObject {
                                 
                                 totalCount = totalCount + 1
                                 
-                                defer {
-                                    objc_sync_exit(self.greatestDifRed)
-                                    objc_sync_exit(self.greatestDifBlue)
-                                    objc_sync_exit(self.greatestDifGreen)
-                                    objc_sync_exit(self.redColor)
-                                    objc_sync_exit(self.greenColor)
-                                    objc_sync_exit(self.blueColor)
-                                    objc_sync_exit(self.highestRed)
-                                    objc_sync_exit(self.highestGreen)
-                                    objc_sync_exit(self.highestBlue)
-                                }
+
                             }
                             
                         }
                         
+                        let gradientDict:[String:Color] = ["red": redColor, "green": greenColor, "blue": blueColor]
+
                         //get averages of colors for quadrant
                         let finalR = totalR / CGFloat(totalCount)
                         let finalG = totalG / CGFloat(totalCount)
                         let finalB = totalB / CGFloat(totalCount)
                         
-                        complete((finalR,finalG,finalB))
+                        complete((finalR,finalG,finalB), gradientDict)
                         
                     }
                 }
@@ -148,6 +123,39 @@ class Parser: NSObject {
     
     private func createColorResult() -> ColorResult {
         let singleColor = solidColor()
+        
+        var newRed:CGFloat = 0.0
+        var newGreen:CGFloat = 0.0
+        var newBlue:CGFloat = 0.0
+        
+        var greenColor: Color = (r: 0, g: 0, b: 0)
+        var redColor: Color = (r: 0, g: 0, b: 0)
+        var blueColor: Color = (r: 0, g: 0, b: 0)
+        
+        for gradient in gradients {
+            let redGradient = gradient["red"]!
+            let greenGradient = gradient["green"]!
+            let blueGradient = gradient["blue"]!
+            
+            //red
+            if redGradient.r > newRed {
+                newRed = redGradient.r
+                redColor = (r: newRed, g: redGradient.g, b: redGradient.b)
+            }
+            
+            //green
+            if greenGradient.g > newGreen {
+                newGreen = greenGradient.g
+                greenColor = (r: greenGradient.r, g: newGreen, b: greenGradient.b)
+            }
+            
+            //blue
+            if blueGradient.b > newBlue {
+                newBlue = blueGradient.b
+                blueColor = (r: blueGradient.r, g: blueGradient.g, b: newBlue)
+            }
+        }
+        
         
         let red = NSColor(deviceRed: redColor.r / 255.0, green: redColor.g / 255.0, blue: redColor.b / 255.0, alpha: 1.0)
         let green = NSColor(deviceRed: greenColor.r / 255.0, green: greenColor.g / 255.0, blue: greenColor.b / 255.0, alpha: 1.0)
@@ -198,8 +206,9 @@ class Parser: NSObject {
         }
         
         for imageRect in frames {
-            self.analyze(imageRect: imageRect, complete: { (result) in
-                self.results.append(result)
+            self.analyze(imageRect: imageRect, complete: { (color,gradient) in
+                self.results.append(color)
+                self.gradients.append(gradient)
                 
                 if self.results.count == frames.count {
                     
