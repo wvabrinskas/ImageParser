@@ -3,7 +3,6 @@
 //  BynderUploader
 //
 //  Created by Wiliam Vabrinskas on 1/19/17.
-//  Copyright © 2017 Elite Daily. All rights reserved.
 //
 
 import Foundation
