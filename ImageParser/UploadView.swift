@@ -1,6 +1,5 @@
 //
 //  UploadView.swift
-//  BynderUploader
 //
 //  Created by Wiliam Vabrinskas on 1/19/17.
 //
@@ -11,7 +10,7 @@ import AppKit
 
 class UploadView: NSView {
     
-    let expectedExt = ["png","jpg","mpg","mpeg","mp4","gif","pdf","txt","rtf"]  //file extensions allowed for Drag&Drop
+    let expectedExt = ["png","jpg","jpeg"]  //file extensions allowed for Drag&Drop
     var file: File?
 
     override func awakeFromNib() {
