@@ -3,7 +3,6 @@
 //  ImageParser
 //
 //  Created by Wiliam Vabrinskas on 2/27/17.
-//  Copyright © 2017 Elite Daily. All rights reserved.
 //
 
 import Foundation
