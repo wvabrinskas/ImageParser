@@ -68,30 +68,45 @@ class Parser: NSObject {
                                 let b = CGFloat(data[pixelInfo + 2])
                                 
                                 //only set the highest red value if its distance from the other two values is greater than previous
-                                if r - b > greatestDifRed.b && r - g > greatestDifRed.g {
-
+                                //red
+                                if r - b > greatestDifRed.b && r > g {
+                                    //set blue color
                                     greatestDifRed.b = r - b
-                                    greatestDifRed.g = r - g
-                                    
-                                    redColor = (r: r, g:g, b: b)
+                                    redColor = (r:r, g:redColor.g, b:b)
                                 }
                                 
+                                if r - g > greatestDifRed.g && r > b {
+                                    //set green color
+                                    greatestDifRed.g = r - g
+                                    redColor = (r: r, g:g, b: redColor.b)
+                                }
+                    
                                 //only set the highest green value if its distance from the other two values is greater than previous
-                                if g - r > greatestDifGreen.r && g - b > greatestDifGreen.b {
-                                    
+                                //green
+                                if g - r > greatestDifGreen.r && g > r {
+                                    //set red color
                                     greatestDifGreen.r = g - r
+                                    greenColor = (r:r, g:g, b: greenColor.b)
+                                }
+                                
+                                if g - b > greatestDifGreen.b && g > b {
+                                    //set blue color
                                     greatestDifGreen.b = g - b
-                                    
-                                    greenColor = (r: r, g, b: b)
+                                    greenColor = (r:greenColor.r, g:g, b:b)
                                 }
 
                                 //only set the highest blue value if its distance from the other two values is greater than previous
-                                if b - r > greatestDifBlue.r &&  b - g > greatestDifBlue.g {
-                                    
+                                //blue
+                                if b - r > greatestDifBlue.r && b > r {
+                                    //set red color
                                     greatestDifBlue.r = b - r
+                                    blueColor = (r:r, g:blueColor.g, b:b)
+                                }
+                                
+                                if b - g > greatestDifBlue.g && b > g {
+                                    //set green color
                                     greatestDifBlue.g = b - g
-                                    
-                                    blueColor = (r: r, g:g, b: b)
+                                    blueColor = (r:blueColor.r, g:g, b:b)
                                 }
                                 
                                 totalR = totalR + r
@@ -99,7 +114,6 @@ class Parser: NSObject {
                                 totalB = totalB + b
                                 
                                 totalCount = totalCount + 1
-                                
 
                             }
                             

@@ -30,6 +30,11 @@ class ViewController: NSViewController {
             colorView.wantsLayer = true
         }
     }
+    
+    @IBOutlet weak var redLabel: NSTextField!
+    @IBOutlet weak var greenLabel: NSTextField!
+    @IBOutlet weak var blueLabel: NSTextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(gotFile(notification:)), name: NSNotification.Name.init(rawValue: "got_file"), object: nil)
@@ -74,7 +79,12 @@ class ViewController: NSViewController {
             self.averageColorLabel.stringValue = "Average color: rgb(\(red), \(green), \(blue))"
             
             let gradient = CAGradientLayer()
-            gradient.colors = [gradientColors["red"]!, gradientColors["green"]!, gradientColors["blue"]!]
+            
+            let gradientRed = gradientColors["red"]!
+            let gradientGreen = gradientColors["green"]!
+            let gradientBlue = gradientColors["blue"]!
+            
+            gradient.colors = [gradientRed, gradientGreen, gradientBlue]
             gradient.frame = self.gradientView.bounds
             gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
             gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
